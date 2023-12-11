@@ -10,8 +10,7 @@ lib/
 # Ignore the compiled HEX file
 *.hex
 
-# Ignore VSCode settings
-.vscode/
+
 
 # Ignore macOS system files
 .DS_Store

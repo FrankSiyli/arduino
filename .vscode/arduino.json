@@ -1,0 +1,7 @@
+{
+  "board": "arduino:avr:uno",
+  "programmer": "avrisp",
+  "port": "/dev/tty.usbmodem14201",
+  "sketch": "christmas_tree_lightning/christmas_tree_lightning.ino",
+  "output": "../build"
+}
