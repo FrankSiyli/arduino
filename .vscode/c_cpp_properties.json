@@ -17,7 +17,7 @@
         },
         {
             "name": "Arduino",
-            "compilerPath": "/Users/imac/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/bin/avr-g++",
+            "compilerPath": "/Users/user/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/bin/avr-g++",
             "compilerArgs": [
                 "-w",
                 "-std=gnu++11",
@@ -30,15 +30,16 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
-                "/Users/imac/Library/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino",
-                "/Users/imac/Library/Arduino15/packages/arduino/hardware/avr/1.8.6/variants/standard",
-                "/Users/imac/Documents/Arduino/libraries/LiquidCrystal/src",
-                "/Users/imac/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include",
-                "/Users/imac/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include-fixed",
-                "/Users/imac/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include"
+                "/Users/user/Library/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino",
+                "/Users/user/Library/Arduino15/packages/arduino/hardware/avr/1.8.6/variants/standard",
+                "/Users/user/Documents/Arduino/libraries/LiquidCrystal/src",
+                "/Users/user/Documents/Arduino/libraries/SimpleDHT",
+                "/Users/user/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include",
+                "/Users/user/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include-fixed",
+                "/Users/user/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include"
             ],
             "forcedInclude": [
-                "/Users/imac/Library/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino/Arduino.h"
+                "/Users/user/Library/Arduino15/packages/arduino/hardware/avr/1.8.6/cores/arduino/Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",

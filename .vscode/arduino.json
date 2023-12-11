@@ -1,7 +1,7 @@
 {
     "board": "arduino:avr:uno",
     "programmer": "avrisp",
-    "port": "/dev/tty.usbmodem4101",
+    "port": "/dev/tty.usbmodem14201",
     "sketch": "projects/humidity_display_for_elly/humidity_display_for_elly.ino",
     "output": "../build"
 }
