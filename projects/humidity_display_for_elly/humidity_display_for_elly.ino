@@ -1,9 +1,9 @@
 #include <LiquidCrystal.h>
 #include <DHT.h>
-int pin = 6;
+int pin = 3;
 int  type = DHT11;
 DHT dht (pin, type);
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd(10, 9, 8, 7, 6, 5);
 
 void  setup() {
   lcd.begin(16, 2);
