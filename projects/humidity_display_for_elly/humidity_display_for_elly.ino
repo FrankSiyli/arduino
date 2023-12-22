@@ -12,18 +12,20 @@ void  setup() {
 
 void loop() {
  
- float Temp = dht.readTemperature();
+ int Temp = dht.readTemperature();
+ 
   lcd.setCursor(0,  0);
-   lcd.print("Temp:");
+   lcd.print("Temperatur:");
+  lcd.setCursor(13, 0);
     lcd.print(Temp);
      lcd.print("C");
      
 
-  float Humid = dht.readHumidity();
+  int Humid = dht.readHumidity();
   
-
-  lcd.setCursor(0, 2);
-   lcd.print("Humid:");
+  lcd.setCursor(0, 1);
+   lcd.print("Luftfeuchte:");
+     lcd.setCursor(13, 1);
     lcd.print(Humid);
      lcd.print("%");
                delay(2000);
