@@ -13,58 +13,39 @@ LiquidCrystal lcd(10, 9, 8, 7, 6, 5);
 
 File myFile;
 const int chipSelect = 4;
-
-unsigned long previousMillis = 0;
-const long interval = 1000;
-const int logInterval = 200;
-int loopCounter = 0;
-
-void initializeDHT() {
-  dht.begin();
-  delay(1000);  
-}
+const long displayInterval = 5 * 1000;  
+const long logInterval = 10 * 60 * 1000;      
+unsigned long previousDisplayMillis = 0;
+unsigned long previousLogMillis = 0;
 
 void setup() {
   Serial.begin(9600);
   initializeRTC();
   initializeLCD();
   initializeDHT();
-waitForSDCard();
+  waitForSDCard();
 }
 
 void loop() {
   unsigned long currentMillis = millis();
- if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;
+
+  if (currentMillis - previousDisplayMillis >= displayInterval) {
+    previousDisplayMillis = currentMillis;
+    displayTemperatureAndHumidity();
+  }
+
+  if (currentMillis - previousLogMillis >= logInterval) {
     DateTime now = rtc.now();
     int humidity = dht.readHumidity();
     int temperature = dht.readTemperature();
-
-    if (SD.begin(chipSelect)) {
-      if (isValidSensorData(temperature, humidity)) {
-        displayTemperatureAndHumidity(temperature, humidity);
+    logDataToSD(now, temperature, humidity);
       }
-    } else {
-      displayNoCard();
-    }
-  }
+  previousLogMillis = currentMillis;
+}
 
- if (SD.begin(chipSelect)) {
-    if (loopCounter >= logInterval) {
-      loopCounter = 0;
-      DateTime now = rtc.now();
-      int humidity = dht.readHumidity();
-      int temperature = dht.readTemperature();
-
-      if (isValidSensorData(temperature, humidity)) {
-        logDataToSD(now, temperature, humidity);
-      }
-    }
-    loopCounter++;
-  } else {
-    displayNoCard();
-    waitForSDCard();
-  }
+void initializeDHT() {
+  dht.begin();
+  delay(1000);
 }
 
 void initializeRTC() {
@@ -84,31 +65,31 @@ void initializeLCD() {
 void waitForSDCard() {
   while (!SD.begin(chipSelect)) {
     displayNoCard();
-    delay(1000); 
   }
 }
 
-void initializeSD() {
-  if (!SD.begin(chipSelect)) {
-    Serial.println("Initialization failed!");
-        displayNoCard();
-    while (1);
-  }
-}
+void displayTemperatureAndHumidity() {
+  DateTime now = rtc.now();
+  int humidity = dht.readHumidity();
+  int temperature = dht.readTemperature();
 
-void displayTemperatureAndHumidity(int temperature, int humidity) {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Temperatur:");
-  lcd.setCursor(13, 0);
-  lcd.print(temperature);
-  lcd.print("C");
-  lcd.setCursor(0, 1);
-  lcd.print("Luftfeuchte:");
-  lcd.setCursor(13, 1);
-  lcd.print(humidity);
-  lcd.print("%");
-  delay(5000);
+  if (SD.begin(chipSelect)) {
+    if (isValidSensorData(temperature, humidity)) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Temperatur:");
+      lcd.setCursor(13, 0);
+      lcd.print(temperature);
+      lcd.print("C");
+      lcd.setCursor(0, 1);
+      lcd.print("Luftfeuchte:");
+      lcd.setCursor(13, 1);
+      lcd.print(humidity);
+      lcd.print("%");
+    }
+  } else {
+    displayNoCard();
+  }
 }
 
 void displayNoCard() {
@@ -122,7 +103,6 @@ void displayNoCard() {
 bool isValidSensorData(int temperature, int humidity) {
   if (isnan(humidity) || isnan(temperature)) {
     Serial.println("Failed to read Data from DHT sensor!");
-    delay(500);
     return false;
   }
   return true;
@@ -148,12 +128,7 @@ void logDataToSD(DateTime now, int temperature, int humidity) {
     myFile.println(humidity);
     myFile.close();
     Serial.println("Successfully writing Data to Micro SD Card");
-    Serial.println("----");
-    Serial.println();
   } else {
     Serial.println("Error opening DHT11Log.txt");
   }
 }
-
-
-
