@@ -31,6 +31,7 @@ void setup() {
   initializeLCD();
   initializeDHT();
   initializeSD();
+//      rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 void loop() {
@@ -58,7 +59,6 @@ void initializeRTC() {
   }
   if (!rtc.isrunning()) {
     Serial.println("RTC is NOT running!");
-    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // Adjust time if needed
   }
   Serial.println("Successfully running RTC DS1307");
   delay(100);
