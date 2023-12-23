@@ -15,14 +15,13 @@ File myFile;
 const int chipSelect = 4;
 
 unsigned long previousMillis = 0;
-const long interval = 2000;
+const long interval = 1000;
+const int logInterval = 200;
+int loopCounter = 0;
 
 void initializeDHT() {
-  Serial.println("Initializing DHT sensor...");
   dht.begin();
   delay(1000);  
-  Serial.println("Successfully initialized DHT sensor");
-  delay(100);
 }
 
 void setup() {
@@ -30,29 +29,45 @@ void setup() {
   initializeRTC();
   initializeLCD();
   initializeDHT();
-  initializeSD();
-//      rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+waitForSDCard();
 }
 
 void loop() {
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= interval) {
+ if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
     DateTime now = rtc.now();
     int humidity = dht.readHumidity();
     int temperature = dht.readTemperature();
 
-    displayTemperatureAndHumidity(temperature, humidity);
-
-    if (isValidSensorData(temperature, humidity)) {
-      logDataToSD(now, temperature, humidity);
-      printDataToSerial(now, temperature, humidity);
+    if (SD.begin(chipSelect)) {
+      if (isValidSensorData(temperature, humidity)) {
+        displayTemperatureAndHumidity(temperature, humidity);
+      }
+    } else {
+      displayNoCard();
     }
+  }
+
+ if (SD.begin(chipSelect)) {
+    if (loopCounter >= logInterval) {
+      loopCounter = 0;
+      DateTime now = rtc.now();
+      int humidity = dht.readHumidity();
+      int temperature = dht.readTemperature();
+
+      if (isValidSensorData(temperature, humidity)) {
+        logDataToSD(now, temperature, humidity);
+      }
+    }
+    loopCounter++;
+  } else {
+    displayNoCard();
+    waitForSDCard();
   }
 }
 
 void initializeRTC() {
-  Serial.println("Initializing RTC DS1307...");
   if (!rtc.begin()) {
     Serial.println("Couldn't find RTC");
     while (1);
@@ -60,24 +75,25 @@ void initializeRTC() {
   if (!rtc.isrunning()) {
     Serial.println("RTC is NOT running!");
   }
-  Serial.println("Successfully running RTC DS1307");
-  delay(100);
 }
 
 void initializeLCD() {
   lcd.begin(16, 2);
 }
 
+void waitForSDCard() {
+  while (!SD.begin(chipSelect)) {
+    displayNoCard();
+    delay(1000); 
+  }
+}
+
 void initializeSD() {
-  Serial.println("Initializing Micro SD Card...");
-  delay(100);
   if (!SD.begin(chipSelect)) {
     Serial.println("Initialization failed!");
+        displayNoCard();
     while (1);
   }
-  Serial.println("Successfully Initializing Micro SD Card");
-  Serial.println();
-  delay(100);
 }
 
 void displayTemperatureAndHumidity(int temperature, int humidity) {
@@ -92,6 +108,15 @@ void displayTemperatureAndHumidity(int temperature, int humidity) {
   lcd.setCursor(13, 1);
   lcd.print(humidity);
   lcd.print("%");
+  delay(5000);
+}
+
+void displayNoCard() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Keine SD Karte");
+  lcd.setCursor(0, 1);
+  lcd.print("erkannt");
 }
 
 bool isValidSensorData(int temperature, int humidity) {
@@ -104,51 +129,31 @@ bool isValidSensorData(int temperature, int humidity) {
 }
 
 void logDataToSD(DateTime now, int temperature, int humidity) {
-  if (now.second() % 5 == 0) {
-    myFile = SD.open("DHT11Log.txt", FILE_WRITE);
-    if (myFile) {
-      myFile.print(now.day());
-      myFile.print("-");
-      myFile.print(now.month());
-      myFile.print("-");
-      myFile.print(now.year());
-      myFile.print(",");
-      myFile.print(now.hour());
-      myFile.print(":");
-      myFile.print(now.minute());
-      myFile.print(":");
-      myFile.print(now.second());
-      myFile.print(",");
-      myFile.print(temperature);
-      myFile.print(",");
-      myFile.println(humidity);
-      myFile.close();
-      Serial.println("Successfully writing Data to Micro SD Card");
-      Serial.println("----");
-      Serial.println();
-    } else {
-      Serial.println("Error opening DHT11Log.txt");
-    }
+  myFile = SD.open("DHT11Log.txt", FILE_WRITE);
+  if (myFile) {
+    myFile.print(now.day());
+    myFile.print("-");
+    myFile.print(now.month());
+    myFile.print("-");
+    myFile.print(now.year());
+    myFile.print(",");
+    myFile.print(now.hour());
+    myFile.print(":");
+    myFile.print(now.minute());
+    myFile.print(":");
+    myFile.print(now.second());
+    myFile.print(",");
+    myFile.print(temperature);
+    myFile.print(",");
+    myFile.println(humidity);
+    myFile.close();
+    Serial.println("Successfully writing Data to Micro SD Card");
+    Serial.println("----");
+    Serial.println();
+  } else {
+    Serial.println("Error opening DHT11Log.txt");
   }
 }
 
-void printDataToSerial(DateTime now, int temperature, int humidity) {
-  Serial.println("----");
-  Serial.print(now.day(), DEC);
-  Serial.print('/');
-  Serial.print(now.month(), DEC);
-  Serial.print('/');
-  Serial.print(now.year(), DEC);
-  Serial.print(" ");
-  Serial.print(now.hour(), DEC);
-  Serial.print(':');
-  Serial.print(now.minute(), DEC);
-  Serial.print(':');
-  Serial.print(now.second(), DEC);
-  Serial.println();
-  Serial.print("Temperature : ");
-  Serial.print(temperature);
-  Serial.print(" | Humidity : ");
-  Serial.println(humidity);
-  Serial.println();
-}
+
+
