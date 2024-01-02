@@ -1,7 +1,7 @@
 {
     "board": "arduino:avr:uno",
     "programmer": "avrisp",
-    "port": "/dev/tty.usbserial-410",
-    "sketch": "projects/arduino/projects/write_humidity_data_with_timestamp_to_sd_card/write_humidity_data_with_timestamp_to_sd_card.ino",
+    "port": "/dev/tty.usbmodem14101",
+    "sketch": "projects/humidity_to_sdcard_and_16x2lcd/humidity_to_sdcard_and_16x2lcd.ino",
     "output": "../build"
 }
