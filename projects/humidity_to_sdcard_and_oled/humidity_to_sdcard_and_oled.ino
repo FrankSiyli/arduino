@@ -1,26 +1,34 @@
+#include <Wire.h>
 #include <RTClib.h>
-#include <LiquidCrystal.h>
 #include <DHT.h>
 #include <SD.h>
-#include <SPI.h>
+#include <SSD1306Ascii.h>
+#include <SSD1306AsciiWire.h>
 
 RTC_DS1307 rtc;
 #define DHTPIN 2
 #define DHTTYPE DHT11
 DHT dht(DHTPIN, DHTTYPE);
-LiquidCrystal lcd(10, 9, 8, 7, 6, 5);
 
-File myFile;
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+#define SCREEN_ADDRESS 0x3C
+SSD1306AsciiWire display;
+
 const int chipSelect = 4;
-const long displayInterval = 5 * 1000;  
-const long logInterval = 10 * 60 * 1000;      
+const long displayInterval = 5 * 1000;
+const long logInterval = 10 * 60 * 1000;
 unsigned long previousDisplayMillis = 0;
 unsigned long previousLogMillis = 0;
 
+File myFile;
+
 void setup() {
   Serial.begin(9600);
+
   initializeRTC();
-  initializeLCD();
+  initializeOLED();
   initializeDHT();
   waitForSDCard();
 }
@@ -38,16 +46,13 @@ void loop() {
     int humidity = dht.readHumidity();
     int temperature = dht.readTemperature();
     logDataToSD(now, temperature, humidity);
-      }
+  }
   previousLogMillis = currentMillis;
 }
 
-void initializeDHT() {
-  dht.begin();
-  delay(1000);
-}
-
 void initializeRTC() {
+  Wire.begin();
+  Wire.beginTransmission(0x68); // Set the I2C address for the RTC
   if (!rtc.begin()) {
     Serial.println("Couldn't find RTC");
     while (1);
@@ -55,10 +60,24 @@ void initializeRTC() {
   if (!rtc.isrunning()) {
     Serial.println("RTC is NOT running!");
   }
+  Wire.endTransmission(); // End the I2C transmission
 }
 
-void initializeLCD() {
-  lcd.begin(16, 2);
+void initializeOLED() {
+  Wire.begin();
+  display.begin(&Adafruit128x64, SCREEN_ADDRESS);
+  display.setFont(Adafruit5x7); // Set font (optional)
+  delay(2000);
+  display.clear();
+display.displayAll();}
+
+
+
+
+
+void initializeDHT() {
+  dht.begin();
+  delay(1000);
 }
 
 void waitForSDCard() {
@@ -72,32 +91,25 @@ void displayTemperatureAndHumidity() {
   int humidity = dht.readHumidity();
   int temperature = dht.readTemperature();
 
-  if (SD.begin(chipSelect)) {
-    if (isValidSensorData(temperature, humidity)) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Temperatur:");
-      lcd.setCursor(13, 0);
-      lcd.print(temperature);
-      lcd.print("C");
-      lcd.setCursor(0, 1);
-      lcd.print("Luftfeuchte:");
-      lcd.setCursor(13, 1);
-      lcd.print(humidity);
-      lcd.print("%");
-    }
-  } else {
-    displayNoCard();
-  }
+  if (isValidSensorData(temperature, humidity)) {
+    display.clear();
+    display.setCursor(0, 0);
+    display.print("Temperature: ");
+    display.print(temperature);
+    display.print("C");
+    display.setCursor(0, 1);
+    display.print("Humidity: ");
+    display.print(humidity);
+    display.print("%");
+display.displayAll();  }
 }
 
 void displayNoCard() {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Keine SD Karte");
-  lcd.setCursor(0, 1);
-  lcd.print("erkannt");
-}
+  display.clear();
+  display.setCursor(0, 0);
+  display.print("No SD Card Detected");
+display.displayAll();}
+
 
 bool isValidSensorData(int temperature, int humidity) {
   if (isnan(humidity) || isnan(temperature)) {
