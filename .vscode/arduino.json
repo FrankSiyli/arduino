@@ -1,7 +1,7 @@
 {
     "board": "arduino:avr:uno",
     "programmer": "avrisp",
-    "port": "/dev/tty.usbmodem14101",
-    "sketch": "projects/humidity_to_sdcard_and_oled/humidity_to_sdcard_and_oled.ino",
+    "port": "/dev/tty.usbserial-1410",
+    "sketch": "projects/temperature_humidity_to_sdcard/temperature_humidity_to_sdcard.ino",
     "output": "../build"
 }
