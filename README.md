@@ -39,7 +39,7 @@ VCC -> 5V
 <br/>
 GND -> GND
 <br/>
-Pin out -> Aruino D2
+Pin out -> Arduino D2
 
 ### Rtc DS1307
 GND -> GND
@@ -62,6 +62,62 @@ MOSI -> Arduino D11
 SCK -> Arduino D13
 <br/>
 CS -> Arduino D4
+
+
+
+## Temperature and humidity to OLED display
+## Temperature and humidity to SDcard
+Due to limited memory on the Arduino I split the code in OLED logic and RTC/SDcard logic for two Arduinos. Both uses the same DHT11 Sensor.
+Communication between the two Arduinos is realized via pins D3
+
+2x Arduino Uno || Nano, OLED SSD1306, Ds1307Rtc, Dht11, MicroSdCardAdapter
+
+
+### DHT11
+VCC -> 5V
+<br/>
+GND -> GND
+<br/>
+2x Pin out -> Arduino(RTC logic and OLED logic) D2
+
+### Rtc DS1307
+GND -> GND
+<br/>
+VCC -> 5V
+<br/>
+SDA -> Arduino(RTC logic)  A4
+<br/>
+SCL -> Arduino(RTC logic) A5
+
+### SD card adapter
+GND -> GND
+<br/>
+VCC -> 5V
+<br/>
+MISO -> Arduino(RTC logic) D12
+<br/>
+MOSI -> Arduino(RTC logic) D11
+<br/>
+SCK -> Arduino(RTC logic) D13
+<br/>
+CS -> Arduino(RTC logic) D4
+
+### OLED display
+
+GND -> GND
+<br/>
+VCC -> 5V
+<br/>
+SDA -> Arduino(OLED logic)  A4
+<br/>
+SCL -> Arduino(OLED logic) A5
+<br/>
+
+
+### Arduino(OLED logic) D3 -> Arduino(RTC logic) D3
+both Arduinos GND -> GND
+<br/>
+both Arduinos 5V -> 5V
 
 
 
