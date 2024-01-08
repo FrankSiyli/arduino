@@ -11,7 +11,7 @@ DHT dht(DHTPIN, DHTTYPE);
 File myFile;
 const int chipSelect = 4;
 const int noCardPin = 3;
-const long logInterval = 10 * 60* 1000;
+const long logInterval = 10 * 60 * 1000;
 unsigned long previousLogMillis = 0;
 unsigned long checkCardMillis = 0;
 const long checkCardInterval = 1000;
@@ -35,10 +35,10 @@ void loop() {
     DateTime now = rtc.now();
     if (SD.begin(chipSelect)) {
       logDataToSD(now, dht.readTemperature(), dht.readHumidity());
+    previousLogMillis = currentMillis;
     } else {
       digitalWrite(noCardPin, HIGH);
     }
-    previousLogMillis = currentMillis;
   }
   if (currentMillis - checkCardMillis >= checkCardInterval) {
     checkCardStatus();
