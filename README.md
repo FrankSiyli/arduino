@@ -1,5 +1,8 @@
 # arduino
 ## Datalogger // Temperature and humidity to Lcd and Sd card 
+![IMG_4535](https://github.com/FrankSiyli/arduino/assets/123658730/bb82328d-cf23-40aa-92bc-c8a03025e477)
+
+
 Arduino Uno || Nano, 16x2Lcd, Ds1307Rtc, Dht11, MicroSdCardAdapter
 
 ### Lcd
