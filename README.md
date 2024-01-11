@@ -62,11 +62,17 @@ MOSI -> Arduino D11
 SCK -> Arduino D13
 <br/>
 CS -> Arduino D4
+<br/>
+<br/>
+<br/>
 
 
 
 ## Temperature and humidity to OLED display
 ## Temperature and humidity to SDcard
+![IMG_4619](https://github.com/FrankSiyli/arduino/assets/123658730/383d85fe-2b2c-4116-9ee3-30bb6d2c8001)
+![IMG_4617](https://github.com/FrankSiyli/arduino/assets/123658730/6ab4d51f-6821-4457-a998-731549b969b8)
+
 Due to limited memory on the Arduino I split the code in OLED logic and RTC/SDcard logic for two Arduinos. Both uses the same DHT11 Sensor.
 Communication between the two Arduinos is realized via pins D3
 
