@@ -37,7 +37,7 @@ void setup() {
   // Enable measurement
   Wire.write(8); // (8dec -> 0000 1000 binary) Bit D3 High for measuring enable 
   Wire.endTransmission();
-  delay(10);
+  delay(2000);
 }
 
 void loop() {
